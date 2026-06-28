@@ -34,6 +34,22 @@ The Rust code keeps native ABI exports in `src/lib.rs`, shared buffer/JSON helpe
 | `clientCertificate` | Client certificate / mTLS | `privateKey`, `privateKeyPassphrase` |
 | `customDriverOptions` | Custom driver options | `password`, `token`, `privateKey`, `privateKeyPassphrase` |
 
+## Experience Metadata
+
+- Domains: `timeSeries`
+- Result views: `timeChart`, `table`, `heatmap`
+- Inspired by: `ClickHouse SQL console`, `time bucketing`, `latest-point analytics`
+
+| Workflow | Result view | Templates |
+|---|---|---|
+| Bucketed aggregate | timeChart | time-clickhouse-bucket |
+| Latest event per key | table | time-clickhouse-latest |
+
+| Template | Label | Language | Result view |
+|---|---|---|---|
+| `time-clickhouse-bucket` | Bucketed aggregate | `sql` | `timeChart` |
+| `time-clickhouse-latest` | Latest per key | `sql` | `table` |
+
 ## ABI Calls
 
 The scaffold handles these JSON requests today:

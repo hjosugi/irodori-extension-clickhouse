@@ -17,7 +17,12 @@
       "metadata",
       "sql",
       "streaming",
-      "explain"
+      "explain",
+      "timeSeries",
+      "timeBuckets",
+      "latestValue",
+      "queryTemplates",
+      "visualization"
     ],
     "connection": {
       "schemaVersion": 1,
@@ -671,5 +676,80 @@
       "clickhouse"
     ],
     "customDriverOptions": true
+  },
+  "experience": {
+    "schemaVersion": 1,
+    "domains": [
+      "timeSeries"
+    ],
+    "inspiredBy": [
+      "ClickHouse SQL console",
+      "time bucketing",
+      "latest-point analytics"
+    ],
+    "resultViews": [
+      "timeChart",
+      "table",
+      "heatmap"
+    ],
+    "objectTypes": [
+      "tables",
+      "columns",
+      "partitions",
+      "projections",
+      "materializedViews"
+    ],
+    "workflows": [
+      {
+        "id": "time-bucket",
+        "label": "Bucketed aggregate",
+        "description": "Group high-volume events into chart windows.",
+        "resultView": "timeChart",
+        "templateIds": [
+          "time-clickhouse-bucket"
+        ]
+      },
+      {
+        "id": "time-latest",
+        "label": "Latest event per key",
+        "description": "Use argMax-style aggregates for latest values.",
+        "resultView": "table",
+        "templateIds": [
+          "time-clickhouse-latest"
+        ]
+      }
+    ],
+    "queryTemplates": [
+      {
+        "id": "time-clickhouse-bucket",
+        "label": "Bucketed aggregate",
+        "language": "sql",
+        "description": "Aggregate events into one-minute windows.",
+        "insertText": "SELECT\n  toStartOfInterval(timestamp, INTERVAL 1 minute) AS bucket,\n  count() AS events\nFROM events\nWHERE timestamp >= now() - INTERVAL 1 HOUR\nGROUP BY bucket\nORDER BY bucket;",
+        "parameters": [],
+        "resultView": "timeChart"
+      },
+      {
+        "id": "time-clickhouse-latest",
+        "label": "Latest per key",
+        "language": "sql",
+        "description": "Return latest values per series key.",
+        "insertText": "SELECT\n  series_id,\n  argMax(value, timestamp) AS latest_value,\n  max(timestamp) AS latest_timestamp\nFROM readings\nGROUP BY series_id;",
+        "parameters": [],
+        "resultView": "table"
+      }
+    ],
+    "inspectorHints": [
+      {
+        "id": "time-partition",
+        "label": "Partition key",
+        "description": "Show partition expressions and TTL settings near each table."
+      },
+      {
+        "id": "time-projection",
+        "label": "Projection hint",
+        "description": "Surface projections and materialized views useful for time buckets."
+      }
+    ]
   }
 }

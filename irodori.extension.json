@@ -36,7 +36,12 @@
           "metadata",
           "sql",
           "streaming",
-          "explain"
+          "explain",
+          "timeSeries",
+          "timeBuckets",
+          "latestValue",
+          "queryTemplates",
+          "visualization"
         ],
         "connection": {
           "schemaVersion": 1,
