@@ -1,0 +1,67 @@
+{
+  "$schema": "https://irodori.dev/schemas/irodori.extension.schema.json",
+  "manifestVersion": 1,
+  "id": "irodori.clickhouse",
+  "name": "ClickHouse Connector",
+  "version": "0.1.0",
+  "publisher": "irodori",
+  "description": "ClickHouse Connector contributes the ClickHouse database connector through the native connector ABI.",
+  "license": "MIT OR 0BSD",
+  "repository": "https://github.com/hjosugi/irodori-extension-clickhouse",
+  "apiVersion": "0.1",
+  "runtime": "native",
+  "entry": "dist/native",
+  "permissions": [
+    "connections:read",
+    "connections:write",
+    "queries:run",
+    "metadata:read",
+    "native",
+    "connectors"
+  ],
+  "contributes": {
+    "connectors": [
+      {
+        "id": "clickhouse.connector",
+        "engine": "clickhouse",
+        "label": "ClickHouse",
+        "aliases": [
+          "clickhouse",
+          "ClickHouse"
+        ],
+        "defaultPort": 8123,
+        "wire": "clickhouse",
+        "module": "clickhouse.driver",
+        "features": [
+          "metadata",
+          "sql",
+          "streaming",
+          "explain"
+        ]
+      }
+    ]
+  },
+  "capabilities": {
+    "nativeModules": [
+      {
+        "id": "clickhouse.driver",
+        "path": "dist/native",
+        "platforms": [
+          "windowsX64",
+          "windowsArm64",
+          "macosX64",
+          "macosArm64",
+          "linuxX64",
+          "linuxArm64"
+        ]
+      }
+    ]
+  },
+  "dev": {
+    "watch": [
+      "src",
+      "connector.config.json",
+      "irodori.extension.json"
+    ]
+  }
+}

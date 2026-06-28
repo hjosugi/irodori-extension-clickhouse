@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "visibility": "public",
+  "extensionId": "irodori.clickhouse",
+  "connector": {
+    "id": "clickhouse.connector",
+    "engine": "clickhouse",
+    "label": "ClickHouse",
+    "aliases": [
+      "clickhouse",
+      "ClickHouse"
+    ],
+    "defaultPort": 8123,
+    "wire": "clickhouse",
+    "module": "clickhouse.driver",
+    "features": [
+      "metadata",
+      "sql",
+      "streaming",
+      "explain"
+    ]
+  },
+  "runtime": {
+    "abi": "irodori.connector.native.v1",
+    "module": {
+      "id": "clickhouse.driver",
+      "path": "dist/native",
+      "platforms": [
+        "windowsX64",
+        "windowsArm64",
+        "macosX64",
+        "macosArm64",
+        "linuxX64",
+        "linuxArm64"
+      ]
+    },
+    "crate": "irodori_extension_clickhouse",
+    "entrypoints": [
+      "irodori_extension_abi_version",
+      "irodori_connector_engine_json",
+      "irodori_extension_manifest_json",
+      "irodori_connector_config_json",
+      "irodori_connector_call_json",
+      "irodori_connector_free_buffer"
+    ],
+    "supportedCalls": [
+      "health",
+      "describe",
+      "manifest",
+      "config"
+    ],
+    "driverLinked": false
+  },
+  "source": {
+    "marketplaceId": "irodori.clickhouse",
+    "repository": "https://github.com/hjosugi/irodori-extension-clickhouse",
+    "knowledgeEngineStatus": "wired",
+    "adapter": "db/clickhouse.rs",
+    "adapterSha256": "91bf9f5fdbb89085987e6480750302e3f25cb0acb9c0734cdaf4c961366f2b79"
+  }
+}
