@@ -87,7 +87,7 @@
     "customDriverOptions": true
   },
   "runtime": {
-    "driverLinked": false
+    "driverLinked": true
   },
   "source": {
     "knowledgeEngineStatus": "wired",
