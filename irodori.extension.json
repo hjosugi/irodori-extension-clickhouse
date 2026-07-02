@@ -77,6 +77,21 @@
                 "required": true
               },
               {
+                "id": "protocol",
+                "label": "Protocol (http, native, mysql, postgresql)",
+                "type": "string",
+                "option": "protocol",
+                "default": "http",
+                "required": true
+              },
+              {
+                "id": "secure",
+                "label": "Use TLS",
+                "type": "boolean",
+                "option": "secure",
+                "default": false
+              },
+              {
                 "id": "port",
                 "label": "Port",
                 "type": "number",
@@ -117,6 +132,21 @@
               "type": "string",
               "profileField": "host",
               "required": true
+            },
+            {
+              "id": "protocol",
+              "label": "Protocol (http, native, mysql, postgresql)",
+              "type": "string",
+              "option": "protocol",
+              "default": "http",
+              "required": true
+            },
+            {
+              "id": "secure",
+              "label": "Use TLS",
+              "type": "boolean",
+              "option": "secure",
+              "default": false
             },
             {
               "id": "port",
