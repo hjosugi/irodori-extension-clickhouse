@@ -1,75 +1,89 @@
 # ClickHouse Connector
 
-Adds ClickHouse connectivity as an installable connector extension.
+Native Irodori Table connector extension for ClickHouse.
 
-This connector is listed in the public Irodori extension marketplace.
+This crate packages the connector metadata, native ABI exports, and driver implementation used by the Irodori extension marketplace.
 
 ## Connector
 
 - Extension ID: `irodori.clickhouse`
 - Engine ID: `clickhouse`
-- Wire: `clickhouse`
+- Wire protocol: `clickhouse`
 - Default port: `8123`
 - Native ABI: `irodori.connector.native.v1`
-- Driver linked: `true`
+- Driver linked: `yes`
+- Marketplace visibility: `public`
+- Package version: `0.1.1`
 
-A desktop adapter source snapshot is staged in `native/source/` from `db/clickhouse.rs`.
+The package includes a desktop adapter source snapshot from `db/clickhouse.rs`.
 
 Connector metadata lives in `connector.config.json` and `irodori.extension.json`.
-The Rust code keeps native ABI exports in `src/lib.rs`, shared buffer/JSON helpers in `src/abi.rs`, and ClickHouse behavior in `src/driver.rs`.
+The Rust crate exports the native ABI from `src/lib.rs`, uses `irodori-connector-abi` for shared JSON/buffer helpers, and keeps connector behavior in `src/driver.rs`.
 
 ## Connection Metadata
 
 - Endpoint modes: `hostPort`, `connectionString`
 - Transport modes: `direct`, `sshTunnel`, `socks5Proxy`, `httpConnectProxy`, `proxyChain`
-- TLS supported: `true`
-- Custom driver options: `true`
+- TLS supported: `yes`
+- TLS required by default: `no`
+- Custom driver options: `yes`
 
-| Auth method | Label | Secret purposes |
-|---|---|---|
-| `none` | No authentication | none |
-| `connectionString` | Connection string / DSN | none |
-| `userPassword` | User/password | `password` |
-| `bearerToken` | Bearer token | `token` |
-| `clientCertificate` | Client certificate / mTLS | `privateKey`, `privateKeyPassphrase` |
-| `customDriverOptions` | Custom driver options | `password`, `token`, `privateKey`, `privateKeyPassphrase` |
+### Endpoint Fields
+
+| Field | Label | Type | Required |
+| --- | --- | --- | --- |
+| `host` | Host | `string` | yes |
+| `protocol` | Protocol (http, native, mysql, postgresql) | `string` | yes |
+| `secure` | Use TLS | `boolean` | no |
+| `port` | Port | `number` | no |
+| `database` | Database | `string` | no |
+
+## Authentication
+
+The connector advertises these authentication modes so clients can render the right credential fields. Driver-specific or provider-specific values can still be passed through `options` when needed.
+
+| Auth method | Label | Kind | Secret purposes |
+| --- | --- | --- | --- |
+| `none` | No authentication | `none` | none |
+| `connectionString` | Connection string / DSN | `connectionString` | none |
+| `userPassword` | User/password | `userPassword` | `password` |
+| `bearerToken` | Bearer token | `token` | `token` |
+| `clientCertificate` | Client certificate / mTLS | `certificate` | `privateKey`, `privateKeyPassphrase` |
+| `customDriverOptions` | Custom driver options | `custom` | `password`, `token`, `privateKey`, `privateKeyPassphrase` |
 
 ## Experience Metadata
 
 - Domains: `timeSeries`
 - Result views: `timeChart`, `table`, `heatmap`
-- Inspired by: `ClickHouse SQL console`, `time bucketing`, `latest-point analytics`
+- Object types: `tables`, `columns`, `partitions`, `projections`, `materializedViews`
+- Inspired by: ClickHouse SQL console, time bucketing, latest-point analytics
 
 | Workflow | Result view | Templates |
-|---|---|---|
-| Bucketed aggregate | timeChart | time-clickhouse-bucket |
-| Latest event per key | table | time-clickhouse-latest |
+| --- | --- | --- |
+| Bucketed aggregate | `timeChart` | `time-clickhouse-bucket` |
+| Latest event per key | `table` | `time-clickhouse-latest` |
 
 | Template | Label | Language | Result view |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `time-clickhouse-bucket` | Bucketed aggregate | `sql` | `timeChart` |
 | `time-clickhouse-latest` | Latest per key | `sql` | `table` |
 
-## ABI Calls
-
-The driver handles these JSON requests today:
+## Native ABI Calls
 
 | Method | Response |
-|---|---|
-| `health` / `ping` | Connector health, engine id, ABI version, and driver link status. |
-| `describe` / `capabilities` | Embedded manifest and connector config. |
-| `manifest` | Raw `irodori.extension.json`. |
-| `config` | Raw `connector.config.json`. |
-| `connect` | Opens an HTTP client and validates the server with `SELECT version()`. |
-| `query` | Runs SQL through the ClickHouse HTTP interface. |
-| `metadata` | Loads table metadata from `system.columns`. |
-| `close` | Removes the cached native connection. |
+| --- | --- |
+| `health` | Returns connector health, engine id, ABI version, and driver status. |
+| `describe` | Returns the embedded manifest and connector config. |
+| `manifest` | Returns raw `irodori.extension.json`. |
+| `config` | Returns raw `connector.config.json`. |
+| `connect` | Opens and validates a native connector connection. |
+| `query` | Runs a connector query and returns structured rows or JSON results. |
+| `metadata` | Reads schemas, tables, columns, indexes, collections, or equivalent metadata. |
+| `close` | Closes and removes a cached native connection. |
 
 ## Development
 
-
-Generated extension repositories share `../target` across sibling repositories so Rust dependencies are compiled once per checkout. DuckDB and MotherDuck are driver-linked by default; set `IRODORI_CONNECTOR_LINK_DUCKDB=0` only when you need metadata-only DuckDB-compatible scaffolds.
-
+All extension crates in this checkout share `../target` so dependencies compile once across sibling repositories.
 
 ```sh
 make check
