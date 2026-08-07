@@ -431,7 +431,7 @@
   },
   "source": {
     "marketplaceId": "irodori.clickhouse",
-    "repository": "https://github.com/hjosugi/irodori-extension-clickhouse",
+    "repository": "https://github.com/irodori-table/irodori-extension-clickhouse",
     "knowledgeEngineStatus": "wired",
     "adapter": "db/clickhouse.rs",
     "adapterSha256": "91bf9f5fdbb89085987e6480750302e3f25cb0acb9c0734cdaf4c961366f2b79",
